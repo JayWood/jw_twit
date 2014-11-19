@@ -1,0 +1,4 @@
+node_modules
+sass_cache
+*.log
+error_log
