@@ -8,6 +8,7 @@ $jw_twit_options = array(
 	'plugin_title' => 'JW Twit',
 	'prefix' => 'jwtwit_',
 	'menu_title' => 'JW Twit',
+	'icon_url' => 'dashicons-twitter',
 	'slug' => 'jw_twit',
 	'opData' => array(
 		'access_token' => array(
