@@ -13,3 +13,4 @@ if ( ! class_exists( 'JW_SIMPLE_OPTIONS' ) ){
 	require_once 'lib/jw_simple_options/simple_options.php';
 }
 require_once 'inc/options.inc.php';
+require_once 'inc/admin.inc.php';

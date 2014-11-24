@@ -17,7 +17,7 @@ $jw_twit_options = array(
 		),
 		'access_secret' => array(
 			'name' => __( 'Access Secret', 'jwtwit' ),
-			'type' => 'text',
+			'type' => 'password',
 		),
 	),
 );
