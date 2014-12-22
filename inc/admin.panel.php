@@ -1,5 +1,5 @@
 <?php
-	$token = get_option( 'jwtwit_token' );
+	$token = get_option( 'jwtwit_key' );
 	$secret = get_option( 'jwtwit_secret' );
 	$add_new_disabled = empty( $token ) || empty( $secret ) ? true : false;
 	$add_new_link = true === $add_new_disabled ? '#' : JwTwit::generate_add_account_link();
@@ -14,8 +14,8 @@
 
 		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><label for="jwtwit_token"><?php _e( 'Access Token', 'jwtwit' ); ?></label></th>
-				<td><input type="text" class="regular-text" name="jwtwit_token" id="jwtwit_token" value="<?php echo get_option( 'jwtwit_token' ); ?>"></td>
+				<th scope="row"><label for="jwtwit_key"><?php _e( 'Access Token', 'jwtwit' ); ?></label></th>
+				<td><input type="text" class="regular-text" name="jwtwit_key" id="jwtwit_key" value="<?php echo get_option( 'jwtwit_key' ); ?>"></td>
 			</tr>
 			<tr valign="top">
 				<th scope="row"><label for="jwtwit_secret"><?php _e( 'Secret', 'jwtwit' ); ?></label></th>
@@ -25,9 +25,9 @@
 
 		<p>
 			<input type="submit" class="button button-primary" value="Submit" />
-			<?php if( true === $add_new_disabled ): ?>
+			<?php if ( true === $add_new_disabled ): ?>
 				<span class="notice"><?php _e( 'In order to add a new account, you will first need to input your token and secret.', 'jwtwit' ); ?></span>
-			<?php else: ?>
+			<?php else : ?>
 				<a href="<?php echo $add_new_link; ?>" class="button button-secondary" <?php disabled( $add_new_disabled ); ?> >Test</a>
 			<?php endif; ?>
 		</p>

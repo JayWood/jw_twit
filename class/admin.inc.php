@@ -10,7 +10,7 @@ class JwTwit {
 
 	var $prefix = 'jwtwit_';
 
-	var $settings = array( 'token', 'secret', 'accounts' );
+	var $settings = array( 'key', 'secret', 'accounts' );
 
 	public function hooks(){
 		add_action( 'admin_enqueue_scripts', array( $this, 'queue_scripts' ) );
@@ -41,8 +41,10 @@ class JwTwit {
 	}
 
 	public function generate_add_account_link(){
-		$token = get_option( 'jwtwit_token' );
+		$key = get_option( 'jwtwit_key' );
 		$secret = get_option( 'jwtwit_secret' );
+
+
 	}
 }
 
