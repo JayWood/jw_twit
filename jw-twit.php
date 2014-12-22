@@ -9,5 +9,4 @@ Author:				Jerry Wood
 Author URI:			http://plugish.com/
 */
 
-require_once 'class/jw_oauth.class.php';
 require_once 'class/admin.inc.php';
