@@ -16,6 +16,18 @@ class JwTwit {
 		add_action( 'admin_enqueue_scripts', array( $this, 'queue_scripts' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
+
+		add_action( 'init', array( $this, 'get_handler' ) );
+	}
+
+	public function get_handler(){
+		if( isset( $_GET['jwtwit'] ) ){
+			switch( $_GET['jwtwit'] ){
+				case 'authorize':
+					$this->twitter_authorize();
+					break;
+			}
+		}
 	}
 
 	public function queue_scripts(){
@@ -41,10 +53,7 @@ class JwTwit {
 	}
 
 	public function generate_add_account_link(){
-		$key = get_option( 'jwtwit_key' );
-		$secret = get_option( 'jwtwit_secret' );
-
-
+		return add_query_arg( array( 'jwtwit' => 'authorize' ), site_url() );
 	}
 }
 
