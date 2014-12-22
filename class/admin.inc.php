@@ -37,11 +37,12 @@ class JwTwit {
 	}
 
 	public function render_options_page(){
-		include '../inc/admin.panel.php';
+		include plugin_dir_path( dirname( __FILE__ ) ) . 'inc/admin.panel.php';
 	}
 
 	public function generate_add_account_link(){
-		
+		$token = get_option( 'jwtwit_token' );
+		$secret = get_option( 'jwtwit_secret' );
 	}
 }
 

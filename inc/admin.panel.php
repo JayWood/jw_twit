@@ -2,7 +2,7 @@
 	$token = get_option( 'jwtwit_token' );
 	$secret = get_option( 'jwtwit_secret' );
 	$add_new_disabled = empty( $token ) || empty( $secret ) ? true : false;
-	$add_new_link = true === $add_new_disabled ? '' : JwTwit::generate_add_account_link();
+	$add_new_link = true === $add_new_disabled ? '#' : JwTwit::generate_add_account_link();
 ?>
 
 <div class="wrap">
