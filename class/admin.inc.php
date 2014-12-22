@@ -55,6 +55,16 @@ class JwTwit {
 	public function generate_add_account_link(){
 		return add_query_arg( array( 'jwtwit' => 'authorize' ), site_url() );
 	}
+
+	function twitter_authorize(){
+		$key = get_option( 'jwtwit_key' );
+		$secret = get_option( 'jwtwit_secret' );
+		$con = new TwitterOAuth( $key, $secret );
+		$callback_url = '';
+		// Callback URL
+		// should be the site url?  Or the admin page?
+		$temp_creds = $con->getRequestToken( $callback_url );
+	}
 }
 
 $jw_twit_admin = new JwTwit();
