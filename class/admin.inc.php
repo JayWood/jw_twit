@@ -18,6 +18,40 @@ class JwTwit {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
 		add_action( 'admin_init', array( $this, 'get_handler' ) );
+
+		add_action( 'init', array( $this, 'register_twitter_post_type' ) );
+	}
+
+	function register_twitter_post_type(){
+
+			$labels = array(
+				'name'                => __( 'Tweet', 'jwtwit' ),
+				'singular_name'       => __( 'Tweets', 'jwtwit' ),
+			);
+
+			$args = array(
+				'labels'                   => $labels,
+				'hierarchical'        => false,
+				'description'         => __( sprintf( '%s Tweets', 'JW Twit' ) ),
+				'public'              => false,
+				'show_ui'             => false,
+				'show_in_menu'        => false,
+				'show_in_admin_bar'   => false,
+				'menu_position'       => null,
+				'menu_icon'           => null,
+				'show_in_nav_menus'   => true,
+				'publicly_queryable'  => true,
+				'exclude_from_search' => true,
+				'has_archive'         => false,
+				'query_var'           => 'jwtwit_tweet',
+				'can_export'          => true,
+				'capability_type'     => 'post',
+				'supports'            => array(
+					'title', 'author', 'thumbnail',
+					'excerpt','custom-fields'
+					)
+			);
+			register_post_type( 'jwtwit_tweets', $args );
 	}
 
 	public function get_handler(){
@@ -31,8 +65,9 @@ class JwTwit {
 	}
 
 	public function queue_scripts(){
-		wp_register_style( 'jwtwit_css', plugins_url( 'css/jw_twit.css', dirname( __FILE__ ) ), false, '1.0' );
-		wp_register_script( 'jwtwit_js', plugins_url( 'js/jquery_jw_twit.js', dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		wp_register_style( 'jwtwit_css', plugins_url( "css/jw_twit{$min}.css", dirname( __FILE__ ) ), false, '1.0' );
+		wp_register_script( 'jwtwit_js', plugins_url( "js/jquery_jw_twit{$min}.js", dirname( __FILE__ ) ), array( 'jquery' ), '1.0', true );
 
 		wp_enqueue_style( 'jwtwit_css' );
 		wp_enqueue_script( 'jwtwit_js' );
@@ -76,6 +111,17 @@ class JwTwit {
 		// Now we redirect the user to the 'authorize' page for twitter
 		wp_redirect( $con->getAuthorizeURL( $temp_creds, 1, 1 ) );
 		exit();
+	}
+
+	/**
+	 * Display Debug
+	 * @return html Prints out all $_REQUEST data
+	 */
+	public function display_debug(){
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ){
+			// Display debug info.
+			?><pre><?php if ( isset( $_REQUEST ) ){ print_r( $_REQUEST ); }?> </pre><?php
+		}
 	}
 }
 

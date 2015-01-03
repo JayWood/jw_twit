@@ -59,12 +59,5 @@
 			</tbody>
 		</table>
 	</form>
-
-	<pre>
-		<?php
-			if ( isset( $_REQUEST ) ){
-				print_r( $_REQUEST );
-			}
-		?>
-	</pre>
+	<?php JWTwit::display_debug(); ?>
 </div>
