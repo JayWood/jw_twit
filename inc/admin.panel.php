@@ -3,13 +3,15 @@
 	$secret = get_option( 'jwtwit_secret' );
 	$add_new_disabled = empty( $token ) || empty( $secret ) ? true : false;
 	$add_new_link = true === $add_new_disabled ? '#' : JwTwit::generate_add_account_link();
+	$date_format = get_option( 'date_format' );
+	$time_format = get_option( 'time_format' );
 
 	$class = true == $add_new_disabled ? '' : 'hidden';
 ?>
 
 <div class="wrap jwtwit">
 	<div id="icon-options-general" class="icon32"><br /></div>
-	<h2><?php _e( 'JW Twit Options', 'jwtwit' ); ?></h2>
+	<h2><?php _e( sprintf( '%s Options', 'JW Twit' ), 'jwtwit' ); ?></h2>
 	<form method="post" action="options.php" class="jwtwit options_panel">
 
 		<?php settings_fields( 'jw_twit' ); ?>
@@ -39,12 +41,20 @@
 		<table class="widefat formtable">
 			<thead>
 				<tr>
-					<th>Testing</th>
+					<th></th>
+					<th><?php _e( 'Tweet Counts', 'jwtwit' ); ?></th>
+					<th><?php _e( 'Linked Categories', 'jwtwit' ); ?></th>
+					<th><?php _e( 'Failed Tweets', 'jwtwit' ); ?></th> <!-- Updated every 24hr -->
+					<th><?php _e( 'Last Jail Time', 'jwtwit' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td>Test</td>
+					<td><img src="x.com" width="64" height="64"></td>
+					<td>3,458</td>
+					<td>None</td>
+					<td>256</td>
+					<td><?php echo date( $date_format.' '.$time_format ); ?>
 				</tr>
 			</tbody>
 		</table>

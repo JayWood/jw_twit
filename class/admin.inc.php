@@ -45,11 +45,17 @@ class JwTwit {
 	}
 
 	public function register_menu(){
-		$this->admin_hook = add_menu_page( 'JW Twit', 'JW Twit', 'manage_options', 'jw-twit-options', array( $this, 'render_options_page' ), 'dashicons-twitter' );
+		$main_hook = add_menu_page( 'JW Twit', 'JW Twit', 'manage_options', 'jw-twit-options', array( $this, 'render_options_page' ), 'dashicons-twitter' );
+		$sub_menu_hook = add_submenu_page( 'jw-twit-options', __( sprintf( '%s Log', 'JW Twit' ) ), __( sprintf( '%s Log', 'JW Twit' ) ), 'manage_options', 'jwtwit-log', array( $this, 'render_log_page' ) );
+		// Can add action here to hook for help tabs later
 	}
 
 	public function render_options_page(){
 		include plugin_dir_path( dirname( __FILE__ ) ) . 'inc/admin.panel.php';
+	}
+
+	public function render_log_page(){
+		include plugin_dir_path( dirname( __FILE__ ) ) . 'inc/admin.log.php';
 	}
 
 	public function generate_add_account_link(){
