@@ -17,12 +17,12 @@ class JwTwit {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
-		add_action( 'init', array( $this, 'get_handler' ) );
+		add_action( 'admin_init', array( $this, 'get_handler' ) );
 	}
 
 	public function get_handler(){
-		if( isset( $_GET['jwtwit'] ) ){
-			switch( $_GET['jwtwit'] ){
+		if ( isset( $_GET['jwtwit'] ) ){
+			switch ( $_GET['jwtwit'] ){
 				case 'authorize':
 					$this->twitter_authorize();
 					break;
@@ -39,7 +39,7 @@ class JwTwit {
 	}
 
 	public function register_settings(){
-		foreach( $this->settings as $setting ){
+		foreach ( $this->settings as $setting ){
 			register_setting( 'jw_twit', $this->prefix.$setting );
 		}
 	}
@@ -53,17 +53,23 @@ class JwTwit {
 	}
 
 	public function generate_add_account_link(){
-		return add_query_arg( array( 'jwtwit' => 'authorize' ), site_url() );
+		return add_query_arg( array( 'jwtwit' => 'authorize', 'page' => 'jw-twit-options' ), admin_url( 'admin.php' ) );
 	}
 
 	function twitter_authorize(){
 		$key = get_option( 'jwtwit_key' );
 		$secret = get_option( 'jwtwit_secret' );
+
 		$con = new TwitterOAuth( $key, $secret );
-		$callback_url = '';
+		$admin_url = admin_url( 'admin.php' );
+		$callback_url = add_query_arg( array( 'page' => 'jw-twit-options' ), $admin_url );
+
 		// Callback URL
-		// should be the site url?  Or the admin page?
 		$temp_creds = $con->getRequestToken( $callback_url );
+
+		// Now we redirect the user to the 'authorize' page for twitter
+		wp_redirect( $con->getAuthorizeURL( $temp_creds, 1, 1 ) );
+		exit();
 	}
 }
 

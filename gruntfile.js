@@ -11,7 +11,7 @@ module.exports = function (grunt) {
 			dist: {
 				expand: true,
 				files: {
-					'js/jquery.jw_twit.min.js': 'js/jquery.jw_twit.js'
+					'js/jquery.jw_twit.min.js': 'js/jquery_jw_twit.js'
 				}
 			}
 		},
@@ -40,7 +40,18 @@ module.exports = function (grunt) {
 				src: 'gruntfile.js'
 			},
 			lib_test: {
-				src: 'js/*.js'
+				src: 'js/jquery_jw_twit.js'
+			}
+		},
+		
+		sass: {
+			options: {
+				style: 'expanded'
+			},
+			dist: {
+				files: {
+					'css/jw_twit.css': 'css/sass/jw_twit.scss'
+				}
 			}
 		},
 		cssmin: {
@@ -60,8 +71,8 @@ module.exports = function (grunt) {
 				tasks: ['jshint:lib_test']
 			},
 			css: {
-				files: ['css/*.css', '!css/*.min.css'],
-				tasks: ['cssmin']
+				files: 'css/**/*.scss',
+				tasks: ['sass', 'cssmin']
 			},
 			js: {
 				files: ['js/*.js', '!js/*.min.js'],
@@ -74,8 +85,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task
-	grunt.registerTask('default', ['jshint', 'uglify', 'cssmin']);
+	grunt.registerTask('default', ['jshint', 'sass', 'uglify', 'cssmin']);
 };

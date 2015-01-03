@@ -9,6 +9,6 @@ Author:				Jerry Wood
 Author URI:			http://plugish.com/
 */
 
-require_once 'lib/twitteroauth/twitteroauth.php';
+require_once 'lib/twitteroauth/twitteroauth/twitteroauth.php';
 require_once 'inc/twitter_config.php';
 require_once 'class/admin.inc.php';
