@@ -10,11 +10,12 @@ class JwTwit {
 
 	var $prefix = 'jwtwit_';
 
-	var $settings = array( 'key', 'secret', 'accounts' );
+	var $settings = array( 'key', 'secret', 'admin_accounts' );
 
 	public function hooks(){
 		add_action( 'admin_enqueue_scripts', array( $this, 'queue_scripts' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_init', array( $this, 'save_new_twitter_user' ) );
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 
 		add_action( 'admin_init', array( $this, 'get_handler' ) );
@@ -80,7 +81,7 @@ class JwTwit {
 	}
 
 	public function register_menu(){
-		$main_hook = add_menu_page( 'JW Twit', 'JW Twit', 'manage_options', 'jw-twit-options', array( $this, 'render_options_page' ), 'dashicons-twitter' );
+		$this->admin_hook = add_menu_page( 'JW Twit', 'JW Twit', 'manage_options', 'jw-twit-options', array( $this, 'render_options_page' ), 'dashicons-twitter' );
 		$sub_menu_hook = add_submenu_page( 'jw-twit-options', __( sprintf( '%s Log', 'JW Twit' ) ), __( sprintf( '%s Log', 'JW Twit' ) ), 'manage_options', 'jwtwit-log', array( $this, 'render_log_page' ) );
 		// Can add action here to hook for help tabs later
 	}
@@ -108,21 +109,65 @@ class JwTwit {
 		// Callback URL
 		$temp_creds = $con->getRequestToken( $callback_url );
 
+		// Since we aren't supposed to use $_SESSION, and due to the 
+		// fact $_COOKIE isn't reliable, I think it would be best to store
+		// the temporary cred results in a transient for no more than 5 minutes.
+		set_transient( 'jwtwit_temp_creds', $temp_creds, 60 * 5 );
+
 		// Now we redirect the user to the 'authorize' page for twitter
 		wp_redirect( $con->getAuthorizeURL( $temp_creds, 1, 1 ) );
 		exit();
 	}
 
 	/**
-	 * Display Debug
-	 * @return html Prints out all $_REQUEST data
+	 * Save new twitter user
 	 */
-	public function display_debug(){
+	function save_new_twitter_user(){
+
+		// We HAVE to have this
+		if ( false === $temp_creds = get_transient( 'jwtwit_temp_creds' ) ){
+			return false;
+		}
+
+		$token           = isset( $_GET['oauth_token'] ) ? $_GET['oauth_token'] : '';
+		// $secret          = isset( $_GET['oauth_token_secret'] ) ? $_GET['oauth_token_secret'] : '';
+		$oauth_verifier  = isset( $_GET['oauth_verifier'] ) ? $_GET['oauth_verifier'] : '';
+		$consumer_key    = get_option( $this->prefix.'key' );
+		$consumer_secret = get_option( $this->prefix.'secret' );
+
+		if ( empty( $token ) || empty( $oauth_verifier ) ){
+			return;
+		}
+
+		// Oauth Dance
+		$oauth             = new TwitterOAuth( $consumer_key, $consumer_secret, $temp_creds['oauth_token'], $temp_creds['oauth_token_secret'] );
+		$token_credentials = $oauth->getAccessToken( $oauth_verifier );
+		$this->display_debug( $token_credentials );
+		$con               = new TwitterOAuth( $consumer_key, $consumer_secret, $token_credentials['oauth_token'], $token_credentials['oauth_token_secret'] );
+		$account           = $con->get( 'account/verify_credentials' );
+
+		// @TODO: Left off here, need to save data for the accounts tab
+		$this->display_debug( $account );
+
+		// $account = $connection->get('account/verify_credentials');
+		//    $status = $connection->post('statuses/update', array('status' => 'Text of status here', 'in_reply_to_status_id' => 123456));
+		//    $status = $connection->delete('statuses/destroy/12345');
+	}
+
+	/**
+	 * Display Debug
+	 * @return html Prints out all data
+	 */
+	public function display_debug( $data = false ){
+
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ){
 			// Display debug info.
-			?><pre><?php if ( isset( $_REQUEST ) ){ print_r( $_REQUEST ); }?> </pre><?php
+			$data = empty( $data ) ? $_REQUEST : $data;
+			?><pre><?php print_r( $data ); ?> </pre><?php
 		}
 	}
+
+
 }
 
 $jw_twit_admin = new JwTwit();
