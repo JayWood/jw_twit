@@ -37,6 +37,11 @@
  */
 
 /**
+ * Get the bootstrap!
+ */
+require_once __DIR__ . '/includes/CMB2/init.php';
+
+/**
  * Autoloads files with classes when needed
  * @since  0.1.0
  * @param  string $class_name Name of the class being requested
@@ -58,6 +63,9 @@ spl_autoload_register( 'jw_twit_autoload_classes' );
 class Jw_Twit {
 
 	const VERSION = '0.1.0';
+
+	protected $admin = null;
+	private $key = 'jwtwit';
 	
 	/**
 	 * Sets up our plugin
@@ -73,6 +81,8 @@ class Jw_Twit {
 		register_deactivation_hook( __FILE__, array( $this, '_deactivate' ) );
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'admin_hooks' ) );
+
+		$this->admin = new Jw_Twit_Admin( $this->key );
 	}
 
 	/**
@@ -108,6 +118,14 @@ class Jw_Twit {
 	 * @return null
 	 */
 	public function admin_hooks() {
+		$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		wp_register_style( 'jwtwit-css', $this->url( "assets/css/jw_twit{$min}.css" ), null, self::VERSION );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+	}
+
+	public function admin_enqueue_scripts(){
+		wp_enqueue_style( 'jwtwit-css' );
 	}
 
 	/**
@@ -159,6 +177,8 @@ class Jw_Twit {
 		switch ( $field ) {
 			case 'url':
 			case 'path':
+			case 'admin':
+			case 'key':
 				return self::$field;
 			default:
 				throw new Exception( 'Invalid '. __CLASS__ .' property: ' . $field );
@@ -168,6 +188,11 @@ class Jw_Twit {
 }
 
 // init our class
-$Jw_Twit = new Jw_Twit();
-$Jw_Twit->hooks();
+$GLOBALS['Jw_Twit'] = new Jw_Twit();
+$GLOBALS['Jw_Twit']->hooks();
+
+function jwtwit_get_option( $key = '' ){
+	global $Jw_Twit;
+	return cmb2_get_option( $Jw_Twit->key, $key );
+}
 

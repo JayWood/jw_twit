@@ -5,3 +5,23 @@
  * Copyright (c) 2015 Jay Wood
  * Licensed under the GPLv2+ license.
  */
+
+.cmb2_options_page.jwtwit-options {
+  .cmb-row.cmb-type-checkbox {
+    .cmb-td {
+      padding-top: 20px;
+      padding-bottom: 0;
+    }
+    .cmb-th {
+      padding-bottom: 0;
+    }
+  }
+
+  .cmb-row.cmb2-id-jw-user-level {
+    .cmb-td {
+      padding-top: 0;
+      margin-top: 0;
+    }
+  }
+}
+
